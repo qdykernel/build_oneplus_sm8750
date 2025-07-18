@@ -37,14 +37,20 @@ jobs:
           oneplus_ace5_pro)
             echo "REPO_MANIFEST=JiuGeFaCai_oneplus_ace5_pro_v"
             echo "DEVICES_NAME=oneplus_ace5_pro"
+            echo "Author=作者：秋刀鱼"
+            echo "Channal=TG频道：@qdykernel"
             ;;
           oneplus_13)
             echo "REPO_MANIFEST=JiuGeFaCai_oneplus_13_v"
             echo "DEVICES_NAME=oneplus_13"
+            echo "Author=作者：秋刀鱼"
+            echo "Channal=TG频道：@qdykernel"
             ;;
           *)
             echo "REPO_MANIFEST=$1"
             echo "DEVICES_NAME=$1"
+            echo "Author=作者：秋刀鱼"
+            echo "Channal=TG频道：@qdykernel"
             ;;
         esac
 
