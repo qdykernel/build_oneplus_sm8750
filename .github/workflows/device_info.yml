@@ -1,0 +1,87 @@
+name: Encrypt Kernel Setup Script
+
+on:
+  workflow_dispatch:
+
+jobs:
+  encrypt-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 缓存 apt-get 安装的依赖
+    - name: Cache apt dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          /var/cache/apt/archives
+          /var/lib/apt/lists
+        key: ${{ runner.os }}-apt-${{ hashFiles('**/package.json') }}
+        restore-keys: |
+          ${{ runner.os }}-apt-
+
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y shc build-essential curl
+
+    - name: Create script file
+      run: |
+        # 以下第35行-68行的代码为加密脚本的内容
+        cat << 'UNIQUE_SCRIPT_END_MARKER' > suksu_setup.sh
+        #!/bin/bash
+        case "${{ github.event.inputs.REPO_MANIFEST }}" in
+            oneplus_ace5_pro)
+              echo "REPO_MANIFEST=JiuGeFaCai_oneplus_ace5_pro_v" >> $GITHUB_ENV
+              echo "DEVICES_NAME=oneplus_ace5_pro" >> $GITHUB_ENV
+              ;;
+            oneplus_13)
+              echo "REPO_MANIFEST=JiuGeFaCai_oneplus_13_v" >> $GITHUB_ENV
+              echo "DEVICES_NAME=oneplus_13" >> $GITHUB_ENV
+              ;;
+            *)
+              echo "REPO_MANIFEST=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
+              echo "DEVICES_NAME=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
+              ;;
+          esac
+        UNIQUE_SCRIPT_END_MARKER
+        
+        chmod +x suksu_setup.sh
+        echo "✅ Script created successfully"
+
+    - name: Verify script
+      run: |
+        echo "Verifying script..."
+        if ! grep -q "#!/bin/bash" suksu_setup.sh; then
+          echo "❌ Missing shebang"
+          exit 1
+        fi
+        
+        if [ $(wc -l < suksu_setup.sh) -lt 10 ]; then
+          echo "❌ Script too short"
+          exit 1
+        fi
+
+    - name: Encrypt script
+      run: |
+        echo "🔒 Starting encryption..."
+        
+        shc -f suksu_setup.sh -o setup.bin -v -r
+        
+        if [ ! -f "setup.bin" ]; then
+          echo "❌ Encryption failed - no output file"
+          exit 1
+        fi
+        
+        echo "Encryption successful"
+        echo "File info: $(file setup.bin)"
+        echo "Size: $(du -h setup.bin)"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: encrypted-setup
+        path: setup.bin
+        retention-days: 7
