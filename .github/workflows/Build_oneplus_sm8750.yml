@@ -77,7 +77,8 @@ jobs:
         run: |
           cp "${GITHUB_WORKSPACE}/.github/workflows/device_info.bin" ./
           chmod +x device_info.bin
-          ./device_info.bin
+          ./device_info.bin "${{ github.event.inputs.REPO_MANIFEST }}" > output.env
+          cat output.env >> $GITHUB_ENV
 
       - name: ⚙️ Set KERNEL_TIME (设置构建时间)
         id: set_kernel_time
