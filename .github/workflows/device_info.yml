@@ -32,20 +32,22 @@ jobs:
         # 以下第35行-68行的代码为加密脚本的内容
         cat << 'UNIQUE_SCRIPT_END_MARKER' > suksu_setup.sh
         #!/bin/bash
-        case "${{ github.event.inputs.REPO_MANIFEST }}" in
-            oneplus_ace5_pro)
-              echo "REPO_MANIFEST=JiuGeFaCai_oneplus_ace5_pro_v" >> $GITHUB_ENV
-              echo "DEVICES_NAME=oneplus_ace5_pro" >> $GITHUB_ENV
-              ;;
-            oneplus_13)
-              echo "REPO_MANIFEST=JiuGeFaCai_oneplus_13_v" >> $GITHUB_ENV
-              echo "DEVICES_NAME=oneplus_13" >> $GITHUB_ENV
-              ;;
-            *)
-              echo "REPO_MANIFEST=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
-              echo "DEVICES_NAME=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
-              ;;
-          esac
+        # device_info.sh（未加密前的版本）
+        case "$1" in
+          oneplus_ace5_pro)
+            echo "REPO_MANIFEST=JiuGeFaCai_oneplus_ace5_pro_v"
+            echo "DEVICES_NAME=oneplus_ace5_pro"
+            ;;
+          oneplus_13)
+            echo "REPO_MANIFEST=JiuGeFaCai_oneplus_13_v"
+            echo "DEVICES_NAME=oneplus_13"
+            ;;
+          *)
+            echo "REPO_MANIFEST=$1"
+            echo "DEVICES_NAME=$1"
+            ;;
+        esac
+
         UNIQUE_SCRIPT_END_MARKER
         
         chmod +x suksu_setup.sh
