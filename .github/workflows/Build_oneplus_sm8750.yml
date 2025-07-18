@@ -75,20 +75,9 @@ jobs:
       - name: ⚙️ Set REPO_MANIFEST (设置对应机型配置文件)
         id: set_manifest
         run: |
-          case "${{ github.event.inputs.REPO_MANIFEST }}" in
-            oneplus_ace5_pro)
-              echo "REPO_MANIFEST=JiuGeFaCai_oneplus_ace5_pro_v" >> $GITHUB_ENV
-              echo "DEVICES_NAME=oneplus_ace5_pro" >> $GITHUB_ENV
-              ;;
-            oneplus_13)
-              echo "REPO_MANIFEST=JiuGeFaCai_oneplus_13_v" >> $GITHUB_ENV
-              echo "DEVICES_NAME=oneplus_13" >> $GITHUB_ENV
-              ;;
-            *)
-              echo "REPO_MANIFEST=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
-              echo "DEVICES_NAME=${{ github.event.inputs.REPO_MANIFEST }}" >> $GITHUB_ENV
-              ;;
-          esac
+          cp "${GITHUB_WORKSPACE}/.github/workflows/device_info.bin" ./
+          chmod +x device_info.bin
+          ./device_info.bin
 
       - name: ⚙️ Set KERNEL_TIME (设置构建时间)
         id: set_kernel_time
